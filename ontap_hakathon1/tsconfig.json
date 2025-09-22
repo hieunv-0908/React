@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    /* Output */
+    "target": "ES2020",
+    "module": "commonjs",
+    "rootDir": "./ts",
+    "outDir": "./js",
+
+    /* Node.js environment */
+    "lib": ["ES2020"],
+    "types": ["node"],
+
+    /* Strict type checking (có thể tắt bớt nếu mệt 😆) */
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+
+    /* Helpful flags */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    /* Source maps cho debug */
+    "sourceMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
