@@ -1,0 +1,22 @@
+{
+  "tasks": [
+    {
+      "id": "2",
+      "taskName": "Làm bài tập T5",
+      "priority": "medium",
+      "completed": false
+    },
+    {
+      "id": "3",
+      "taskName": "TypeScript",
+      "priority": "low",
+      "completed": false
+    },
+    {
+      "id": "1758770254983",
+      "taskName": "Đi ăn",
+      "completed": false,
+      "priority": "medium"
+    }
+  ]
+}
