@@ -1,51 +1,56 @@
 import React, { useEffect, useMemo, useState } from 'react';
-
 import type { Book } from './components/types';
 import BookForm from './components/BookForm';
 import BookList from './components/BookList';
 import BookSearchSortFilter from './components/BookSearchSortFilter';
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from './store/store';
 import { fetchBooks, fetchDeleteBooks, fetchAddBooks } from './components/BookSlice';
 
 const App: React.FC = () => {
-  // Quản lý mảng các sách
-  const { books, status, error } = useSelector((state: RootState) => state.book)
-  const dispatch = useDispatch<AppDispatch>()
-  // Quản lý trạng thái mở form
+  const { books, status, error } = useSelector((state: RootState) => state.book);
+  const dispatch = useDispatch<AppDispatch>();
+
   const [openForm, setOpenForm] = useState(false);
-  // Quản lý trạng thái edit
   const [editing, setEditing] = useState<Partial<Book> | undefined>();
-  // Quản lý trạng thái tìm kiếm
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState<'title' | 'year'>('title');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
+  // Trạng thái hiển thị spinner với delay tối thiểu
+  const [showLoading, setShowLoading] = useState(false);
+
   useEffect(() => {
-    dispatch(fetchBooks())
-  }, [])
+    dispatch(fetchBooks());
+  }, [dispatch]);
 
+  // Logic đảm bảo spinner hiện ít nhất 1.5 giây
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
 
-  // Mảng Các thể loại sách được thay đổi mỗi khi mảng sách có thay đổi
+    if (status === 'loading') {
+      setShowLoading(true);
+    } else {
+      // Chờ 1.5s trước khi tắt spinner (nếu API xong sớm thì vẫn giữ đủ 1.5s)
+      timer = setTimeout(() => setShowLoading(false), 1500);
+    }
+
+    return () => clearTimeout(timer);
+  }, [status]);
+
   const categories = useMemo(
     () => Array.from(new Set(books.map((b) => b.category))),
     [books],
   );
 
-  const handleSubmit = (data: {
-    id: string;
-    title: string;
-    author: string;
-    year: number;
-    category: string;
-  }) => {
+  const handleSubmit = (data: Book) => {
     if (data.id) {
-      dispatch(fetchAddBooks(data))
+      dispatch(fetchAddBooks(data));
     } else {
       const id = Date.now().toString();
-      dispatch(fetchAddBooks({ ...data, id }))
+      dispatch(fetchAddBooks({ ...data, id }));
     }
     setOpenForm(false);
   };
@@ -55,7 +60,9 @@ const App: React.FC = () => {
     if (search.trim()) {
       const q = search.toLowerCase();
       out = out.filter(
-        (b) => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q),
+        (b) =>
+          b.title.toLowerCase().includes(q) ||
+          b.author.toLowerCase().includes(q),
       );
     }
     if (category !== 'all') out = out.filter((b) => b.category === category);
@@ -86,38 +93,55 @@ const App: React.FC = () => {
         Add Book
       </Button>
 
-      <div className="mt-4">
-        <BookSearchSortFilter
-          search={search}
-          category={category}
-          sortBy={sortBy}
-          sortDir={sortDir}
-          categories={categories}
-          onSearchChange={setSearch}
-          onCategoryChange={setCategory}
-          onSortChange={(by, dir) => {
-            setSortBy(by);
-            setSortDir(dir);
-          }}
-          onClear={() => {
-            setSearch('');
-            setCategory('all');
-            setSortBy('title');
-            setSortDir('asc');
-          }}
-        />
-      </div>
+      {/* Loading Spinner với delay tối thiểu 1.5s */}
+      {showLoading && (
+        <div className="flex justify-center items-center mt-10">
+          <CircularProgress />
+        </div>
+      )}
 
-      <div className="mt-6">
-        <BookList
-          books={filteredSorted}
-          onEdit={(b) => {
-            setEditing(b);
-            setOpenForm(true);
-          }}
-          onDelete={(id) => dispatch(fetchDeleteBooks(id))}
-        />
-      </div>
+      {/* Hiển thị lỗi */}
+      {status === 'failed' && (
+        <p className="text-red-500 mt-4">⚠️ Error: {error}</p>
+      )}
+
+      {/* Hiển thị danh sách khi load xong và không còn loading */}
+      {status === 'succeeded' && !showLoading && (
+        <>
+          <div className="mt-4">
+            <BookSearchSortFilter
+              search={search}
+              category={category}
+              sortBy={sortBy}
+              sortDir={sortDir}
+              categories={categories}
+              onSearchChange={setSearch}
+              onCategoryChange={setCategory}
+              onSortChange={(by, dir) => {
+                setSortBy(by);
+                setSortDir(dir);
+              }}
+              onClear={() => {
+                setSearch('');
+                setCategory('all');
+                setSortBy('title');
+                setSortDir('asc');
+              }}
+            />
+          </div>
+
+          <div className="mt-6">
+            <BookList
+              books={filteredSorted}
+              onEdit={(b) => {
+                setEditing(b);
+                setOpenForm(true);
+              }}
+              onDelete={(id) => dispatch(fetchDeleteBooks(id))}
+            />
+          </div>
+        </>
+      )}
 
       <BookForm
         open={openForm}
