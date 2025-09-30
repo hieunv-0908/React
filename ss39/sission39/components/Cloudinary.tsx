@@ -23,11 +23,11 @@ function CloudinaryThumbnail() {
             );
 
             if (res.status === 200) {
-                const secureUrl = res.data.secure_url; // ảnh gốc
+                const secureUrl = res.data.secure_url; 
                 const thumbUrl = secureUrl.replace(
                     "/upload/",
                     "/upload/w_150,h_150,c_fill/"
-                ); // thumbnail
+                ); 
 
                 setOriginalUrl(secureUrl);
                 setThumbnailUrl(thumbUrl);
@@ -54,7 +54,7 @@ function CloudinaryThumbnail() {
                         src={thumbnailUrl}
                         alt="Thumbnail"
                         style={{ cursor: "pointer", border: "1px solid #ccc" }}
-                        onClick={() => window.open(originalUrl, "_blank")} // mở ảnh gốc
+                        onClick={() => window.open(originalUrl, "_blank")} 
                     />
                 </div>
             )}
