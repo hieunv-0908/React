@@ -1,11 +1,19 @@
 {
-    "post":[
-        {
-            "id":"1",
-            "title":"State trong react",
-            "image":"https://cdn.pixabay.com/photo/2023/05/06/14/08/deer-7974406_1280.jpg",
-            "date":"",
-            "status":true
-        }
-    ]
+  "post": [
+    {
+      "id": "1",
+      "title": "State trong react",
+      "image": "https://cdn.pixabay.com/photo/2023/05/06/14/08/deer-7974406_1280.jpg",
+      "date": "",
+      "status": true
+    },
+    {
+      "id": "7800",
+      "title": "zxczxzx",
+      "image": "",
+      "date": "1/10/2025",
+      "status": "Đã xuất bản",
+      "content": "zxzxczxc"
+    }
+  ]
 }
