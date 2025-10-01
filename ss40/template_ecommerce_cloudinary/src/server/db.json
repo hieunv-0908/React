@@ -1,0 +1,36 @@
+{
+    "categories": [
+        {
+            "id": "1",
+            "name": "Điện thoại",
+            "description": "Các loại smartphone",
+            "status": "active"
+        },
+        {
+            "id": "2",
+            "name": "Laptop",
+            "description": "Máy tính xách tay",
+            "status": "active"
+        }
+    ],
+    "products": [
+        {
+            "id": "1",
+            "code": "P001",
+            "name": "iPhone 15",
+            "category": "Điện thoại",
+            "price": 20000000,
+            "image": "",
+            "status": "active"
+        },
+        {
+            "id": "2",
+            "code": "P002",
+            "name": "Macbook Pro",
+            "category": "Laptop",
+            "price": 35000000,
+            "image": "",
+            "status": "inactive"
+        }
+    ]
+}
